@@ -1,5 +1,4 @@
 import java.util.ArrayList;
-import java.util.function.IntBinaryOperator;
 
 public abstract class SearchProblem {
 	ArrayList<Operator> operators;
@@ -12,5 +11,5 @@ public abstract class SearchProblem {
 	
 	public abstract ArrayList<Node> expand(Node node, ArrayList<Operator> ops);
 	
-	public abstract ArrayList<Operator> search(SearchProblem problem, IntBinaryOperator QingFunction);
+	public abstract ArrayList<Operator> search(SearchProblem problem, SearchStrategy QingFunction, boolean visualize);
 }
