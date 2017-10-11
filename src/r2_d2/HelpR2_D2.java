@@ -21,7 +21,7 @@ public class HelpR2_D2 extends SearchProblem{
 	
 	public HelpR2_D2() {
 
-		genGrid();
+//		genGrid();
 		
 		
 	}

@@ -72,4 +72,20 @@ public class Upwards extends Operator{
 		return null;
 	}
 	
+	public static void main(String[] args) {
+		HelpR2_D2 help = new HelpR2_D2();
+		GridPosition[][] grid = new GridPosition[3][1];
+		GridPosition initial = new GridPosition(2, 0, Cell.EMPTY);
+		GridPosition.setNumCols(1);
+		GridPosition.setNumRows(3);
+		grid[0][0] = new GridPosition(0, 0, Cell.EMPTY);
+		grid[1][0] = new GridPosition(0, 1, Cell.EMPTY);
+		grid[2][0] = initial;
+		
+		State curr = new State(initial, new ArrayList<GridPosition>());
+		Upwards up = new Upwards();
+		State newState = up.apply(curr);
+		System.out.println(newState.getCurrPosition().getRow() + " " + newState.getCurrPosition().getColumn());
+	}
+	
 }
