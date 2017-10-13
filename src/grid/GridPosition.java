@@ -13,21 +13,28 @@ public  class GridPosition implements Comparable<GridPosition> , Cloneable{
 		this.column = column;
 		this.cell = cell;
 	}
+	
+	
+	public String toString(){
+		return "Row: " + this.row + '\n' + "Column: " + this.column  + '\n' + "Cell: " + cell;
+	}
 
 	@Override
 	public int compareTo(GridPosition other) {
 		return row - other.row  == 0 ? column - other.column : row - other.row;
 	}
 
-	public boolean equals(GridPosition other)
+	@Override
+	public boolean equals(Object other)
 	{
-		return row == other.row && column == other.column;
+		GridPosition gridPosition = (GridPosition)other;
+		return row == gridPosition.row && column == gridPosition.column;
 	}
 
-	public static boolean validPosition(int row, int col)
+	public static boolean validPosition(int gRow, int gCol)
 	{
-		boolean ret = row >= 0 && row < numRows;
-		ret &= col >= 0 && col < numCols;
+		boolean ret = gRow >= 0 && gRow < numRows;
+		ret &= gCol >= 0 && gCol < numCols;
 		return ret; 
 	}
 

@@ -1,5 +1,13 @@
 package operators;
 
-public class Left {
+import search_problem.State;
+
+public class Left extends Operator{
+	
+	@Override
+	public State apply(State currState) {
+		return super.apply(currState, 0, -1);
+	}
+	
 
 }

@@ -6,12 +6,20 @@ import search_strategies.SearchStrategy;
 
 public abstract class SearchProblem {
 	ArrayList<Operator> operators;
-	State initialState;
+	protected static State initialState;
 	ArrayList<State> stateSpace;
 	
+	public ArrayList<Operator> getOperators() {
+		return operators;
+	}
+
+	public void setOperators(ArrayList<Operator> operators) {
+		this.operators = operators;
+	}
+
 	public abstract boolean goalTest(SearchProblem problem, State state);
 	
-	public abstract long pathCost(SearchProblem problem, Node node);
+	public abstract int pathCost(SearchProblem problem, Node node, int childCost);
 	
 	public abstract ArrayList<Node> expand(Node node, ArrayList<Operator> ops);
 	

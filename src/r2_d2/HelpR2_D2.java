@@ -4,7 +4,11 @@ import java.util.ArrayList;
 
 import grid.Cell;
 import grid.GridPosition;
+import operators.Downwards;
+import operators.Left;
 import operators.Operator;
+import operators.Right;
+import operators.Upwards;
 import search_problem.Node;
 import search_problem.SearchProblem;
 import search_problem.State;
@@ -12,19 +16,47 @@ import search_strategies.SearchStrategy;
 
 public class HelpR2_D2 extends SearchProblem{
 	static GridPosition[][] grid;
-	int numberOfRocks;
-	int numberOfPads;
-	int numberOfBlocks;
-
+	static int numberOfRocks;
+	static int numberOfPads;
+	static int numberOfBlocks;
+	
 	int numPressedPads;
 	int numUnpressedPads;
 	
 	public HelpR2_D2() {
-
 //		genGrid();
-		
-		
+		ArrayList<Operator> ops = new ArrayList<Operator>();
+		ops.add(new Upwards());
+		ops.add(new Downwards());
+		ops.add(new Left());
+		ops.add(new Right());
+		setOperators(ops);				
 	}
+	
+	public static int getNumberOfRocks() {
+		return numberOfRocks;
+	}
+
+	public static void setNumberOfRocks(int numberOfRocks) {
+		HelpR2_D2.numberOfRocks = numberOfRocks;
+	}
+
+	public static int getNumberOfPads() {
+		return numberOfPads;
+	}
+
+	public static void setNumberOfPads(int numberOfPads) {
+		HelpR2_D2.numberOfPads = numberOfPads;
+	}
+
+	public static int getNumberOfBlocks() {
+		return numberOfBlocks;
+	}
+
+	public static void setNumberOfBlocks(int numberOfBlocks) {
+		HelpR2_D2.numberOfBlocks = numberOfBlocks;
+	}
+
 
 	public void genGrid(){
 		int rows = (int) (Math.random() * 10 + 1);
@@ -43,6 +75,7 @@ public class HelpR2_D2 extends SearchProblem{
 		numPressedPads = 0;
 		numUnpressedPads = 0;
 		
+		ArrayList<GridPosition>	rockPositions = new ArrayList<GridPosition>();
 		
 		// TODO Save rock positions for initial state
 		for (int i = 0; i < numberOfRocks; i++) {
@@ -117,8 +150,6 @@ public class HelpR2_D2 extends SearchProblem{
 			r2d2Col = (int) (Math.random() * columns);
 		}
 
-		
-
 	}
 	
 	public void printGrid()
@@ -144,26 +175,39 @@ public class HelpR2_D2 extends SearchProblem{
 	}
 
 	@Override
-	public long pathCost(SearchProblem problem, Node node) {
-		// TODO Auto-generated method stub
-		return 0;
+	public int pathCost(SearchProblem problem, Node parent, int cost) {
+		return parent.getCost() + cost;
 	}
 
 	@Override
 	public ArrayList<Node> expand(Node node, ArrayList<Operator> ops) {
-		// TODO Auto-generated method stub
-		return null;
+		ArrayList<Node> children = new ArrayList<Node>();
+		for (int i = 0; i < ops.size(); i++) {
+			Operator currOp = ops.get(i);
+			State transitionState = currOp.apply(node.getState());
+			if(transitionState == null)
+				continue;
+			Node transitionNode = new Node(transitionState, node, currOp, node.getDepth() + 1, pathCost(this, node,transitionState.getTransitionCost()));
+			children.add(transitionNode);
+		}
+		return children;
 	}
 
 	@Override
 	public ArrayList<Operator> search(SearchProblem problem, SearchStrategy QingFunction, boolean visualize) {
-		// TODO Auto-generated method stub
+		Node root = new Node(initialState, null, null, 0, 0);
+		ArrayList<Node> children = expand(root, getOperators());
+		
 		return null;
 	}
 	
 	public static GridPosition[][] getGrid()
 	{
 		return grid;
+	}
+	
+	public void setGrid(GridPosition[][] Grid){
+		grid = Grid;
 	}
 	
 	public static void main(String[] args) {
