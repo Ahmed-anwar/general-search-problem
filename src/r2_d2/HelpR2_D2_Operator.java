@@ -1,16 +1,31 @@
-package operators;
+package r2_d2;
+
 import java.util.ArrayList;
 
 import grid.Cell;
 import grid.GridPosition;
-import r2_d2.HelpR2_D2;
+import search_problem.Operator;
 import search_problem.State;
 
-public abstract class Operator {
-
-	public abstract State apply(State state);
-
-	public State apply(State state, int dx, int dy){
+public class HelpR2_D2_Operator extends Operator {
+	
+	int dx;
+	int dy;
+	String name;
+	
+	public HelpR2_D2_Operator(int x, int y, String n)
+	{
+		dx = x;
+		dy = y;
+		name = n;
+	}
+	
+	@Override
+	public HelpR2_D2_State apply(State state) {
+		return apply((HelpR2_D2_State) state, dx, dy);
+	}
+	
+	public HelpR2_D2_State apply(HelpR2_D2_State state, int dx, int dy){
 		GridPosition currPosition = state.getCurrPosition();
 
 		int newRow = currPosition.getRow() + dx;
@@ -36,7 +51,7 @@ public abstract class Operator {
 			if(newCell == Cell.ACTIVE_PORTAL)
 				tcost = 1;
 			GridPosition newPos = new GridPosition(newRow, newCol, newCell);
-			State newState = new State(newPos, state.getRocksPositions(), state.getPressedPads(), tcost);
+			HelpR2_D2_State newState = new HelpR2_D2_State(newPos, state.getRocksPositions(), state.getPressedPads(), tcost);
 			return newState;
 		}
 		else if(newCell == Cell.PRESSED_PAD || newCell == Cell.ROCK)
@@ -76,7 +91,7 @@ public abstract class Operator {
 			rocksPositions.remove(newPos);
 			rocksPositions.add(nextPos);
 
-			State newState = new State(newPos, rocksPositions, newPressPads, tcost);
+			HelpR2_D2_State newState = new HelpR2_D2_State(newPos, rocksPositions, newPressPads, tcost);
 			return newState;
 		}
 		return null;
@@ -99,5 +114,31 @@ public abstract class Operator {
 		}
 		return Cell.EMPTY;
 	}
+	
+	public static void main(String[] args) {
+		HelpR2_D2 help = new HelpR2_D2();
+		GridPosition[][] grid = new GridPosition[3][1];
+		GridPosition initial = new GridPosition(2, 0, Cell.EMPTY);
+		GridPosition.setNumCols(1);
+		GridPosition.setNumRows(3);
+		help.setGrid(grid);
+		grid[0][0] = new GridPosition(0, 0, Cell.UNPRESSED_PAD);
+		grid[1][0] = new GridPosition(0, 1, Cell.ROCK);
+		grid[2][0] = initial;
+		
+		HelpR2_D2_State curr = new HelpR2_D2_State(initial, new ArrayList<GridPosition>(), 0, 0);
+		curr.getRocksPositions().add(new GridPosition(1, 0, Cell.ROCK));
+//		curr.getRocksPositions().add(new GridPosition(0, 0, Cell.ROCK));
+		HelpR2_D2_Operator up = new HelpR2_D2_Operator(-1, 0, "Up");
+		HelpR2_D2_State newHelpR2_D2_State = up.apply(curr);
+//		System.out.println(grid[0][0]);
+//		System.out.println(grid[1][0]);
+//		System.out.println(grid[2][0]);
+//		System.out.println("New position: " + newHelpR2_D2_State.getCurrPosition());
+//		System.out.println("Rock positions: " + curr.getRocksPositions());
+//		System.out.println("Rock positions new: " + newHelpR2_D2_State.getRocksPositions());
+//		System.out.println("New number of pressed pads: " + newHelpR2_D2_State.getPressedPads());
+//		System.out.println(newHelpR2_D2_State.getCurrPosition().getRow() + " " + newHelpR2_D2_State.getCurrPosition().getColumn());
 
+	}
 }

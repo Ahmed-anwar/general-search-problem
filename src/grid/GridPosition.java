@@ -6,15 +6,27 @@ public  class GridPosition implements Comparable<GridPosition> , Cloneable{
 	static int numRows;
 	static int numCols;
 	Cell cell;
+	int cellNum;
 
 	public GridPosition(int row, int column, Cell cell)
 	{
 		this.row = row;
 		this.column = column;
 		this.cell = cell;
+		this.cellNum = row*numRows + column;
 	}
 	
 	
+	public int getCellNum() {
+		return cellNum;
+	}
+
+
+	public void setCellNum(int cellNum) {
+		this.cellNum = cellNum;
+	}
+
+
 	public String toString(){
 		return "Row: " + this.row + '\n' + "Column: " + this.column  + '\n' + "Cell: " + cell;
 	}

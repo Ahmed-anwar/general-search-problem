@@ -4,14 +4,9 @@ import java.util.ArrayList;
 
 import grid.Cell;
 import grid.GridPosition;
-import operators.Downwards;
-import operators.Left;
-import operators.Operator;
-import operators.Right;
-import operators.Upwards;
 import search_problem.Node;
+import search_problem.Operator;
 import search_problem.SearchProblem;
-import search_problem.State;
 import search_strategies.SearchStrategy;
 
 public class HelpR2_D2 extends SearchProblem{
@@ -25,12 +20,17 @@ public class HelpR2_D2 extends SearchProblem{
 	
 	public HelpR2_D2() {
 //		genGrid();
+		
 		ArrayList<Operator> ops = new ArrayList<Operator>();
-		ops.add(new Upwards());
-		ops.add(new Downwards());
-		ops.add(new Left());
-		ops.add(new Right());
-		setOperators(ops);				
+
+		ops.add(new HelpR2_D2_Operator(0,  -1, "Up"));
+		ops.add(new HelpR2_D2_Operator(0,  1, "Down"));
+		ops.add(new HelpR2_D2_Operator(-1,  0, "Left"));
+		ops.add(new HelpR2_D2_Operator(1,  0, "Right"));
+		setOperators(ops);		
+		
+		initialState = genGrid();
+		
 	}
 	
 	public static int getNumberOfRocks() {
@@ -58,7 +58,7 @@ public class HelpR2_D2 extends SearchProblem{
 	}
 
 
-	public void genGrid(){
+	public HelpR2_D2_State genGrid(){
 		int rows = (int) (Math.random() * 10 + 1);
 		int columns = (int) (Math.random() * 10 + 1);
 		grid = new GridPosition[rows][columns];
@@ -89,6 +89,7 @@ public class HelpR2_D2 extends SearchProblem{
 			}
 
 			grid[row][column].setCell(Cell.ROCK);
+			rockPositions.add(new GridPosition(row, column, Cell.ROCK));
 		}
 
 		for (int i = 0; i < numberOfPads; i++) {
@@ -109,6 +110,8 @@ public class HelpR2_D2 extends SearchProblem{
 
 			else if(grid[row][column].getCell() == Cell.ROCK)
 			{
+				rockPositions.remove(new GridPosition(row, column, Cell.ROCK));
+				rockPositions.add(new GridPosition(row, column, Cell.PRESSED_PAD));
 				grid[row][column].setCell(Cell.PRESSED_PAD);
 				numPressedPads++;
 			}
@@ -144,11 +147,14 @@ public class HelpR2_D2 extends SearchProblem{
 		int r2d2Row = (int) (Math.random() * rows);
 		int r2d2Col = (int) (Math.random() * columns);
 
-		while(grid[r2d2Row][r2d2Col].getCell() != Cell.EMPTY)
+		while(grid[r2d2Row][r2d2Col].getCell() != Cell.EMPTY  && grid[r2d2Row][r2d2Col].getCell() != Cell.UNPRESSED_PAD)
 		{
 			r2d2Row = (int) (Math.random() * rows);
 			r2d2Col = (int) (Math.random() * columns);
 		}
+		
+		GridPosition initialPos = new GridPosition(r2d2Row, r2d2Col, grid[r2d2Row][r2d2Col].getCell());
+		return new HelpR2_D2_State(initialPos, rockPositions, numPressedPads, 0);
 
 	}
 	
@@ -169,7 +175,7 @@ public class HelpR2_D2 extends SearchProblem{
 	}
 
 	@Override
-	public boolean goalTest(SearchProblem problem, State state) {
+	public boolean goalTest(SearchProblem problem, HelpR2_D2_State state) {
 		// TODO Auto-generated method stub
 		return false;
 	}
@@ -184,7 +190,7 @@ public class HelpR2_D2 extends SearchProblem{
 		ArrayList<Node> children = new ArrayList<Node>();
 		for (int i = 0; i < ops.size(); i++) {
 			Operator currOp = ops.get(i);
-			State transitionState = currOp.apply(node.getState());
+			HelpR2_D2_State transitionState = currOp.apply(node.getState());
 			if(transitionState == null)
 				continue;
 			Node transitionNode = new Node(transitionState, node, currOp, node.getDepth() + 1, pathCost(this, node,transitionState.getTransitionCost()));

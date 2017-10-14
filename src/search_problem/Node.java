@@ -1,5 +1,4 @@
 package search_problem;
-import operators.Operator;
 
 public class Node {
 	State state;

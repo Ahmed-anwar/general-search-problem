@@ -1,13 +1,13 @@
 package search_problem;
 import java.util.ArrayList;
 
-import operators.Operator;
+import r2_d2.HelpR2_D2_State;
 import search_strategies.SearchStrategy;
 
 public abstract class SearchProblem {
 	ArrayList<Operator> operators;
-	protected static State initialState;
-	ArrayList<State> stateSpace;
+	protected static HelpR2_D2_State initialState;
+	ArrayList<HelpR2_D2_State> stateSpace;
 	
 	public ArrayList<Operator> getOperators() {
 		return operators;
@@ -17,7 +17,7 @@ public abstract class SearchProblem {
 		this.operators = operators;
 	}
 
-	public abstract boolean goalTest(SearchProblem problem, State state);
+	public abstract boolean goalTest(SearchProblem problem, HelpR2_D2_State state);
 	
 	public abstract int pathCost(SearchProblem problem, Node node, int childCost);
 	
