@@ -55,5 +55,11 @@ public class Node {
 		this.cost = cost;
 	}
 	
+	@Override
+	public boolean equals(Object other)
+	{
+		Node otherNode = (Node) other;
+		return state.equals(otherNode.state);
+	}
 
 }

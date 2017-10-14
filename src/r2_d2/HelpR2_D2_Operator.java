@@ -38,13 +38,9 @@ public class HelpR2_D2_Operator extends Operator {
 
 		Cell newCell = updateCell(newRow, newCol, state.getRocksPositions(), state.getPressedPads());
 
-		int nextRow = newRow + dx;
-		int nextCol = newCol + dy;
-
-		Cell nextCell = updateCell(nextRow, nextCol, state.getRocksPositions(), state.getPressedPads());
 
 
-		if(newCell == Cell.EMPTY || newCell == Cell.UNPRESSED_PAD || newCell == Cell.ACTIVE_PORTAL)
+		if(newCell == Cell.EMPTY || newCell == Cell.UNPRESSED_PAD || newCell == Cell.ACTIVE_PORTAL || newCell == Cell.INACTIVE_PORTAL)
 		{
 			int tcost = 3;
 			
@@ -56,6 +52,15 @@ public class HelpR2_D2_Operator extends Operator {
 		}
 		else if(newCell == Cell.PRESSED_PAD || newCell == Cell.ROCK)
 		{
+			
+			int nextRow = newRow + dx;
+			int nextCol = newCol + dy;
+			
+			if(!GridPosition.validPosition(nextRow, nextCol))
+				return null;
+			
+			Cell nextCell = updateCell(nextRow, nextCol, state.getRocksPositions(), state.getPressedPads());
+			
 			boolean possiblePush = GridPosition.validPosition(nextRow, nextCol);
 			possiblePush &= (nextCell == Cell.EMPTY || nextCell == Cell.UNPRESSED_PAD);
 

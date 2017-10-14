@@ -17,7 +17,7 @@ public abstract class SearchProblem {
 		this.operators = operators;
 	}
 
-	public abstract boolean goalTest(SearchProblem problem, HelpR2_D2_State state);
+	public abstract boolean goalTest(SearchProblem problem, State state);
 	
 	public abstract int pathCost(SearchProblem problem, Node node, int childCost);
 	

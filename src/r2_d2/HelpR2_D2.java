@@ -1,12 +1,17 @@
 package r2_d2;
 import java.io.PrintWriter;
 import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.LinkedList;
+import java.util.Queue;
 
 import grid.Cell;
 import grid.GridPosition;
 import search_problem.Node;
 import search_problem.Operator;
 import search_problem.SearchProblem;
+import search_problem.State;
+import search_strategies.BFS;
 import search_strategies.SearchStrategy;
 
 public class HelpR2_D2 extends SearchProblem{
@@ -29,7 +34,7 @@ public class HelpR2_D2 extends SearchProblem{
 		ops.add(new HelpR2_D2_Operator(1,  0, "Right"));
 		setOperators(ops);		
 		
-		initialState = genGrid();
+//		initialState = genGrid();
 		
 	}
 	
@@ -175,9 +180,13 @@ public class HelpR2_D2 extends SearchProblem{
 	}
 
 	@Override
-	public boolean goalTest(SearchProblem problem, HelpR2_D2_State state) {
-		// TODO Auto-generated method stub
-		return false;
+	public boolean goalTest(SearchProblem problem, State state) {
+		HelpR2_D2_State helpState = (HelpR2_D2_State) state;
+		GridPosition currPos = helpState.getCurrPosition();
+		
+		return helpState.getPressedPads() == numberOfPads && 
+				(grid[currPos.getRow()][currPos.getColumn()].getCell() == Cell.ACTIVE_PORTAL ||
+						grid[currPos.getRow()][currPos.getColumn()].getCell() == Cell.INACTIVE_PORTAL);
 	}
 
 	@Override
@@ -202,8 +211,37 @@ public class HelpR2_D2 extends SearchProblem{
 	@Override
 	public ArrayList<Operator> search(SearchProblem problem, SearchStrategy QingFunction, boolean visualize) {
 		Node root = new Node(initialState, null, null, 0, 0);
-		ArrayList<Node> children = expand(root, getOperators());
+		ArrayList<Node> visited = new ArrayList<Node>();
+		visited.add(root);
+		Queue<Node> queuedNodes = new LinkedList<Node>();
+		queuedNodes.add(root);
+		while(!queuedNodes.isEmpty())
+		{
+			Node curr = queuedNodes.poll();
+			
+//			if(((HelpR2_D2_State) curr.getState()).getCurrPosition().equals(new GridPosition(1, 3, Cell.ACTIVE_PORTAL)))
+//				System.out.println("Current state : " + curr.getState() + " " + grid[1][3].getCell());
+			
+			if(goalTest(this, curr.getState()))
+			{
+				System.out.println("Solution found!");
+				System.out.println(curr.getState());
+				// TODO trace operators until root
+				return null;
+			}
+			
+			ArrayList<Node> children = expand(curr, this.getOperators());
+			ArrayList<Node> notVisitedChildren = new ArrayList<Node>();
+			for(Node child : children)
+				if(!visited.contains(child)){
+//					System.out.println("visited node found");
+					visited.add(child);
+					notVisitedChildren.add(child);
+				}
+			queuedNodes = QingFunction.enqueue(queuedNodes, notVisitedChildren);
+		}
 		
+		System.out.println("No solution found!");
 		return null;
 	}
 	
@@ -217,7 +255,39 @@ public class HelpR2_D2 extends SearchProblem{
 	}
 	
 	public static void main(String[] args) {
-		HelpR2_D2 test = new HelpR2_D2();
-		test.printGrid();
+		HelpR2_D2 help = new HelpR2_D2();
+		GridPosition[][] grid = new GridPosition[4][4];
+		GridPosition initial = new GridPosition(0, 2, Cell.EMPTY);
+		GridPosition.setNumCols(4);
+		GridPosition.setNumRows(4);
+		help.numPressedPads = 0;
+		help.numberOfPads = 1;
+		help.setGrid(grid);
+		grid[0][0] = new GridPosition(0, 0, Cell.UNPRESSED_PAD);
+		grid[0][1] = new GridPosition(0, 1, Cell.ROCK);
+		grid[0][2] = initial;
+		grid[0][3] = new GridPosition(0, 3, Cell.EMPTY);
+		
+		grid[1][0] = new GridPosition(1, 0, Cell.EMPTY);
+		grid[1][1] = new GridPosition(1, 1, Cell.EMPTY);
+		grid[1][2] = new GridPosition(1, 2, Cell.EMPTY);
+		grid[1][3] = new GridPosition(1, 3, Cell.INACTIVE_PORTAL);
+		
+		grid[2][0] = new GridPosition(2, 0, Cell.EMPTY);
+		grid[2][1] = new GridPosition(2, 1, Cell.EMPTY);
+		grid[2][2] = new GridPosition(2, 2, Cell.EMPTY);
+		grid[2][3] = new GridPosition(2, 3, Cell.EMPTY);
+		
+		grid[3][0] = new GridPosition(3, 0, Cell.EMPTY);
+		grid[3][1] = new GridPosition(3, 1, Cell.EMPTY);
+		grid[3][2] = new GridPosition(3, 2, Cell.EMPTY);
+		grid[3][3] = new GridPosition(3, 3, Cell.EMPTY);
+		ArrayList<GridPosition> rocks = new ArrayList<GridPosition>();
+		rocks.add(new GridPosition(0, 1, Cell.ROCK));
+		help.initialState = new HelpR2_D2_State(initial, rocks, 0, 0);
+//		test.printGrid();
+		BFS bfs = new BFS(help, false);
+		bfs.search();
+		
 	}
 }

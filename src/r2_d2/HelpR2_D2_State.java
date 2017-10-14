@@ -19,9 +19,14 @@ public class HelpR2_D2_State  extends State implements Comparable<HelpR2_D2_Stat
 		rocksPositions = rocks;
 		pressedPads = pp;
 		transitionCost = tcost;
+		id = 0;
 		
+//		System.out.println(rocksPositions);
 		for (int i = 0; i < rocksPositions.size(); i++) 
+		{
 			id |= (1 << rocksPositions.get(i).getCellNum());
+		}
+//		System.out.println(Long.toBinaryString(id));
 		
 	}
 	
@@ -70,14 +75,20 @@ public class HelpR2_D2_State  extends State implements Comparable<HelpR2_D2_Stat
 	public boolean equals(Object other)
 	{
 		HelpR2_D2_State otherState = (HelpR2_D2_State) other;
-		return id == otherState.getId() && currPosition.equals(otherState.getCurrPosition());
-		
+		boolean ret = id == otherState.getId() && currPosition.equals(otherState.getCurrPosition());
+		return ret;
 	}
 
 	@Override
 	public int compareTo(HelpR2_D2_State o) {
 		// TODO Auto-generated method stub
 		return 0;
+	}
+	
+	public String toString()
+	{
+		return "Robot's position : Row = " + currPosition.getRow() + " Column = " + currPosition.getColumn() + "\n" 
+				+ "Rocks positions : " + Long.toBinaryString(id);
 	}
 
 

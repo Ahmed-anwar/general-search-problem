@@ -4,7 +4,7 @@ import java.util.Queue;
 
 import search_problem.Node;
 
-public interface SearchStrategy {
+public abstract class SearchStrategy {
 	
-	public Queue<Node> enqueue(Queue<Node> nodesQueue, ArrayList<Node> children);
+	public abstract Queue<Node> enqueue(Queue<Node> nodesQueue, ArrayList<Node> children);
 }
