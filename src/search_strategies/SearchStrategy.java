@@ -6,5 +6,8 @@ import search_problem.Node;
 
 public abstract class SearchStrategy {
 	
+	public abstract Node search();
+	
 	public abstract Queue<Node> enqueue(Queue<Node> nodesQueue, ArrayList<Node> children);
+	
 }

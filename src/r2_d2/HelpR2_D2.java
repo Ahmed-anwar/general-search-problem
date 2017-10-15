@@ -1,9 +1,9 @@
 package r2_d2;
 import java.io.PrintWriter;
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.Queue;
+import java.util.Stack;
 
 import grid.Cell;
 import grid.GridPosition;
@@ -12,7 +12,9 @@ import search_problem.Operator;
 import search_problem.SearchProblem;
 import search_problem.State;
 import search_strategies.BFS;
+import search_strategies.IterativeDeepening;
 import search_strategies.SearchStrategy;
+import search_strategies.UniformCost;
 
 public class HelpR2_D2 extends SearchProblem{
 	static GridPosition[][] grid;
@@ -101,25 +103,15 @@ public class HelpR2_D2 extends SearchProblem{
 			int row = (int) (Math.random() * rows);
 			int column = (int) (Math.random() * columns);
 
-			while(grid[row][column].getCell() != Cell.EMPTY && grid[row][column].getCell() != Cell.ROCK)
+			while(grid[row][column].getCell() != Cell.EMPTY )
 			{
 				row = (int) (Math.random() * rows);
 				column = (int) (Math.random() * columns);
 			}
 
-			if(grid[row][column].getCell() == Cell.EMPTY)
-			{
 				grid[row][column].setCell(Cell.UNPRESSED_PAD);
 				numUnpressedPads++;
-			}
 
-			else if(grid[row][column].getCell() == Cell.ROCK)
-			{
-				rockPositions.remove(new GridPosition(row, column, Cell.ROCK));
-				rockPositions.add(new GridPosition(row, column, Cell.PRESSED_PAD));
-				grid[row][column].setCell(Cell.PRESSED_PAD);
-				numPressedPads++;
-			}
 		}
 
 		for (int i = 0; i < numberOfBlocks; i++) {
@@ -209,28 +201,34 @@ public class HelpR2_D2 extends SearchProblem{
 	}
 
 	@Override
-	public ArrayList<Operator> search(SearchProblem problem, SearchStrategy QingFunction, boolean visualize) {
+	public Node search(SearchProblem problem, SearchStrategy QingFunction, boolean visualize) {
 		Node root = new Node(initialState, null, null, 0, 0);
 		ArrayList<Node> visited = new ArrayList<Node>();
 		visited.add(root);
 		Queue<Node> queuedNodes = new LinkedList<Node>();
 		queuedNodes.add(root);
+		int numberOfExpandedNodes = 0;
 		while(!queuedNodes.isEmpty())
 		{
 			Node curr = queuedNodes.poll();
-			
+			System.out.println(curr.getDepth());
 //			if(((HelpR2_D2_State) curr.getState()).getCurrPosition().equals(new GridPosition(1, 3, Cell.ACTIVE_PORTAL)))
 //				System.out.println("Current state : " + curr.getState() + " " + grid[1][3].getCell());
 			
 			if(goalTest(this, curr.getState()))
 			{
 				System.out.println("Solution found!");
-				System.out.println(curr.getState());
+				System.out.println("Number of expanded nodes : " + numberOfExpandedNodes);
+
+//				System.out.println(curr.getState());
 				// TODO trace operators until root
-				return null;
+				if(visualize)
+					traceSolution(curr);
+				return curr;
 			}
 			
 			ArrayList<Node> children = expand(curr, this.getOperators());
+			numberOfExpandedNodes++;
 			ArrayList<Node> notVisitedChildren = new ArrayList<Node>();
 			for(Node child : children)
 				if(!visited.contains(child)){
@@ -242,6 +240,7 @@ public class HelpR2_D2 extends SearchProblem{
 		}
 		
 		System.out.println("No solution found!");
+		System.out.println("Number of expanded nodes : " + numberOfExpandedNodes);
 		return null;
 	}
 	
@@ -254,14 +253,29 @@ public class HelpR2_D2 extends SearchProblem{
 		grid = Grid;
 	}
 	
+	public static void traceSolution(Node goalNode)
+	{
+		Stack<Node> path = new Stack<Node>();
+		path.add(goalNode);
+		Node parent = goalNode.getParent();
+		while(parent != null)
+		{
+			path.add(parent);
+			parent = parent.getParent();
+		}
+		while(!path.isEmpty())
+			System.out.println(path.pop());
+	}
+	
 	public static void main(String[] args) {
+	
 		HelpR2_D2 help = new HelpR2_D2();
 		GridPosition[][] grid = new GridPosition[4][4];
 		GridPosition initial = new GridPosition(0, 2, Cell.EMPTY);
 		GridPosition.setNumCols(4);
 		GridPosition.setNumRows(4);
 		help.numPressedPads = 0;
-		help.numberOfPads = 1;
+		help.numberOfPads = 2;
 		help.setGrid(grid);
 		grid[0][0] = new GridPosition(0, 0, Cell.UNPRESSED_PAD);
 		grid[0][1] = new GridPosition(0, 1, Cell.ROCK);
@@ -274,8 +288,8 @@ public class HelpR2_D2 extends SearchProblem{
 		grid[1][3] = new GridPosition(1, 3, Cell.INACTIVE_PORTAL);
 		
 		grid[2][0] = new GridPosition(2, 0, Cell.EMPTY);
-		grid[2][1] = new GridPosition(2, 1, Cell.EMPTY);
-		grid[2][2] = new GridPosition(2, 2, Cell.EMPTY);
+		grid[2][1] = new GridPosition(2, 1, Cell.ROCK);
+		grid[2][2] = new GridPosition(2, 2, Cell.UNPRESSED_PAD);
 		grid[2][3] = new GridPosition(2, 3, Cell.EMPTY);
 		
 		grid[3][0] = new GridPosition(3, 0, Cell.EMPTY);
@@ -283,11 +297,19 @@ public class HelpR2_D2 extends SearchProblem{
 		grid[3][2] = new GridPosition(3, 2, Cell.EMPTY);
 		grid[3][3] = new GridPosition(3, 3, Cell.EMPTY);
 		ArrayList<GridPosition> rocks = new ArrayList<GridPosition>();
-		rocks.add(new GridPosition(0, 1, Cell.ROCK));
-		help.initialState = new HelpR2_D2_State(initial, rocks, 0, 0);
+		rocks.add(new GridPosition(0, 1, Cell.ROCK)); 
+		rocks.add(new GridPosition(2, 1, Cell.ROCK));
+		HelpR2_D2.initialState = new HelpR2_D2_State(initial, rocks, 0, 0);
 //		test.printGrid();
-		BFS bfs = new BFS(help, false);
+		
+		BFS bfs = new BFS(help, true);
 		bfs.search();
+		
+		UniformCost ufc = new UniformCost(help, false);
+		ufc.search();
+		
+//		IterativeDeepening iterDeep = new IterativeDeepening(help, false);
+//		iterDeep.search();
 		
 	}
 }

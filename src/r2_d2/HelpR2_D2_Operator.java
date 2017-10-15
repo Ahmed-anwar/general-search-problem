@@ -36,7 +36,7 @@ public class HelpR2_D2_Operator extends Operator {
 		if(!possibleMove)
 			return null;
 
-		Cell newCell = updateCell(newRow, newCol, state.getRocksPositions(), state.getPressedPads());
+		Cell newCell = GridPosition.updateCell(newRow, newCol, state.getRocksPositions(), state.getPressedPads());
 
 
 
@@ -59,7 +59,7 @@ public class HelpR2_D2_Operator extends Operator {
 			if(!GridPosition.validPosition(nextRow, nextCol))
 				return null;
 			
-			Cell nextCell = updateCell(nextRow, nextCol, state.getRocksPositions(), state.getPressedPads());
+			Cell nextCell = GridPosition.updateCell(nextRow, nextCol, state.getRocksPositions(), state.getPressedPads());
 			
 			boolean possiblePush = GridPosition.validPosition(nextRow, nextCol);
 			possiblePush &= (nextCell == Cell.EMPTY || nextCell == Cell.UNPRESSED_PAD);
@@ -102,23 +102,7 @@ public class HelpR2_D2_Operator extends Operator {
 		return null;
 	}
 
-	public Cell updateCell(int row, int column, ArrayList<GridPosition> rocks, int pp){
-		GridPosition[][] grid = HelpR2_D2.getGrid();
-		Cell initialCell = grid[row][column].getCell();
 
-		boolean containsRock = rocks.contains(new GridPosition(row, column, Cell.ROCK));
-
-		switch(initialCell){
-		case EMPTY : 
-		case ROCK : return containsRock ? Cell.ROCK : Cell.EMPTY;
-		case UNPRESSED_PAD : 
-		case PRESSED_PAD : return containsRock ? Cell.PRESSED_PAD : Cell.UNPRESSED_PAD;
-		case ACTIVE_PORTAL : 
-		case INACTIVE_PORTAL : return pp == HelpR2_D2.getNumberOfPads() ? Cell.ACTIVE_PORTAL : Cell.INACTIVE_PORTAL;
-		case BLOCKED : return Cell.BLOCKED;
-		}
-		return Cell.EMPTY;
-	}
 	
 	public static void main(String[] args) {
 		HelpR2_D2 help = new HelpR2_D2();

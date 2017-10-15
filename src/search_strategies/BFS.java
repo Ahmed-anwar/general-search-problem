@@ -18,7 +18,7 @@ public class BFS extends SearchStrategy{
 		visualize = v;
 	}
 
-	public ArrayList<Operator> search() {
+	public Node search() {
 		return problem.search(problem, this, visualize);
 	}
 	

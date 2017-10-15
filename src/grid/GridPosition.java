@@ -1,5 +1,9 @@
 package grid;
 
+import java.util.ArrayList;
+
+import r2_d2.HelpR2_D2;
+
 public  class GridPosition implements Comparable<GridPosition> , Cloneable{
 	int row;
 	int column;
@@ -48,6 +52,24 @@ public  class GridPosition implements Comparable<GridPosition> , Cloneable{
 		boolean ret = gRow >= 0 && gRow < numRows;
 		ret &= gCol >= 0 && gCol < numCols;
 		return ret; 
+	}
+	
+	public static Cell updateCell(int row, int column, ArrayList<GridPosition> rocks, int pp){
+		GridPosition[][] grid = HelpR2_D2.getGrid();
+		Cell initialCell = grid[row][column].getCell();
+
+		boolean containsRock = rocks.contains(new GridPosition(row, column, Cell.ROCK));
+
+		switch(initialCell){
+		case EMPTY : 
+		case ROCK : return containsRock ? Cell.ROCK : Cell.EMPTY;
+		case UNPRESSED_PAD : 
+		case PRESSED_PAD : return containsRock ? Cell.PRESSED_PAD : Cell.UNPRESSED_PAD;
+		case ACTIVE_PORTAL : 
+		case INACTIVE_PORTAL : return pp == HelpR2_D2.getNumberOfPads() ? Cell.ACTIVE_PORTAL : Cell.INACTIVE_PORTAL;
+		case BLOCKED : return Cell.BLOCKED;
+		}
+		return Cell.EMPTY;
 	}
 
 	public int getRow() {

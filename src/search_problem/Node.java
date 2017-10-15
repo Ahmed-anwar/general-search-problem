@@ -1,6 +1,6 @@
 package search_problem;
 
-public class Node {
+public class Node implements Comparable<Node>{
 	State state;
 	Node parent;
 	Operator getAncestor;
@@ -61,5 +61,19 @@ public class Node {
 		Node otherNode = (Node) other;
 		return state.equals(otherNode.state);
 	}
+
+	@Override
+	public int compareTo(Node other) {
+		return state.compareTo(other.state);
+	}
+	
+	@Override
+	public String toString()
+	{
+		
+		return state.toString() + "Depth : " + depth;
+	}
+	
+	
 
 }

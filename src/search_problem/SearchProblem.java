@@ -23,5 +23,5 @@ public abstract class SearchProblem {
 	
 	public abstract ArrayList<Node> expand(Node node, ArrayList<Operator> ops);
 	
-	public abstract ArrayList<Operator> search(SearchProblem problem, SearchStrategy QingFunction, boolean visualize);
+	public abstract Node search(SearchProblem problem, SearchStrategy QingFunction, boolean visualize);
 }
