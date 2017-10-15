@@ -21,9 +21,12 @@ public class HelpR2_D2 extends SearchProblem{
 	static int numberOfRocks;
 	static int numberOfPads;
 	static int numberOfBlocks;
-	
+	static int rowPortal;
+	static int colPortal;
+	static ArrayList<GridPosition> padsPositions;
 	int numPressedPads;
 	int numUnpressedPads;
+	
 	
 	public HelpR2_D2() {
 //		genGrid();
@@ -81,6 +84,7 @@ public class HelpR2_D2 extends SearchProblem{
 		numberOfBlocks = (int) (Math.random() * rows + 1);
 		numPressedPads = 0;
 		numUnpressedPads = 0;
+		padsPositions = new ArrayList<GridPosition>();
 		
 		ArrayList<GridPosition>	rockPositions = new ArrayList<GridPosition>();
 		
@@ -110,6 +114,7 @@ public class HelpR2_D2 extends SearchProblem{
 			}
 
 				grid[row][column].setCell(Cell.UNPRESSED_PAD);
+				padsPositions.add(new GridPosition(row, column, Cell.UNPRESSED_PAD));
 				numUnpressedPads++;
 
 		}
@@ -135,6 +140,9 @@ public class HelpR2_D2 extends SearchProblem{
 			portalRow = (int) (Math.random() * rows);
 			portalCol = (int) (Math.random() * columns);
 		}
+		
+		rowPortal = portalRow;
+		colPortal = portalCol;
 
 		if(numPressedPads == numberOfPads)
 			grid[portalRow][portalCol].setCell(Cell.ACTIVE_PORTAL);
@@ -155,6 +163,22 @@ public class HelpR2_D2 extends SearchProblem{
 
 	}
 	
+	public static int getRowPortal() {
+		return rowPortal;
+	}
+
+	public static void setRowPortal(int rowPortal) {
+		HelpR2_D2.rowPortal = rowPortal;
+	}
+
+	public static int getColPortal() {
+		return colPortal;
+	}
+
+	public static void setColPortal(int colPortal) {
+		HelpR2_D2.colPortal = colPortal;
+	}
+
 	public void printGrid()
 	{
 		PrintWriter pw = new PrintWriter(System.out);

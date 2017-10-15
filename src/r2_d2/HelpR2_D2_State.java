@@ -86,17 +86,28 @@ public class HelpR2_D2_State  extends State{
 		return (transitionCost - pressedPads) - (o.transitionCost - pressedPads);
 	}
 
+	public int h1()
+	{
+		return Math.abs(currPosition.getRow() - HelpR2_D2.getRowPortal()) + Math.abs(currPosition.getColumn() - HelpR2_D2.getColPortal())
+		+ (HelpR2_D2.getNumberOfPads() - pressedPads);
+	}
+
+	public int h2()
+	{
+		return Math.abs(currPosition.getRow() - HelpR2_D2.getRowPortal()) + Math.abs(currPosition.getColumn() - HelpR2_D2.getColPortal())
+	}
+
 	public String toString()
 	{
 		String ret = "Robot's position : Row = " + currPosition.getRow() + " Column = " + currPosition.getColumn() + "\n" 
 				+ "Rocks positions : " + Long.toBinaryString(id) + "\n"
 				+ "Number of pressed pads : " + pressedPads + "\n"
-				+ "Transition cost : " + transitionCost;
+				+ "Transition cost : " + transitionCost+ "\n";
 		GridPosition[][] grid = HelpR2_D2.getGrid();
-		
+
 		StringBuilder sb = new StringBuilder();
 		sb.append(ret + '\n');
-		
+
 		for (int i = 0; i < grid.length; i++) {
 			for (int j = 0; j < grid[i].length; j++) {
 				if(i == currPosition.getRow() && j == currPosition.getColumn())
@@ -119,7 +130,7 @@ public class HelpR2_D2_State  extends State{
 			}
 			sb.append('\n');
 		}
-		
+
 		return sb.toString();
 
 	}
