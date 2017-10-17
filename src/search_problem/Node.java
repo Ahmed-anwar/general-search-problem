@@ -1,18 +1,24 @@
 package search_problem;
 
+import r2_d2.HelpR2_D2_State;
+
 public class Node implements Comparable<Node>{
 	State state;
 	Node parent;
 	Operator getAncestor;
 	int depth;
-	int cost; // from the root node
+	int cost = 1; // from the root node
 	
-	public Node(State s, Node p, Operator op, int d, int c){
+	public Node(State s, Node p, Operator op, int d){
 		state = s;
 		parent = p;
 		getAncestor = op;
 		depth = d;
-		cost = c;
+		if(p != null)
+			cost = p.cost;
+		cost += ((HelpR2_D2_State) s).getTransitionCost();
+		System.out.println("Node Cost : " + cost);
+		System.out.println("Transition Cost : " + ((HelpR2_D2_State) s).getTransitionCost());
 	}
 
 	public State getState() {
@@ -64,7 +70,7 @@ public class Node implements Comparable<Node>{
 
 	@Override
 	public int compareTo(Node other) {
-		return state.compareTo(other.state);
+		return cost - other.cost;
 	}
 	
 	@Override

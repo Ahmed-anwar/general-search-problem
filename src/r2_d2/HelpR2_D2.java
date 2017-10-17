@@ -12,9 +12,7 @@ import search_problem.Operator;
 import search_problem.SearchProblem;
 import search_problem.State;
 import search_strategies.BFS;
-import search_strategies.IterativeDeepening;
 import search_strategies.SearchStrategy;
-import search_strategies.UniformCost;
 
 public class HelpR2_D2 extends SearchProblem{
 	static GridPosition[][] grid;
@@ -206,8 +204,8 @@ public class HelpR2_D2 extends SearchProblem{
 	}
 
 	@Override
-	public int pathCost(SearchProblem problem, Node parent, int cost) {
-		return parent.getCost() + cost;
+	public int pathCost(SearchProblem problem, Node node, int cost) {
+		return node.getCost();
 	}
 
 	@Override
@@ -218,7 +216,7 @@ public class HelpR2_D2 extends SearchProblem{
 			HelpR2_D2_State transitionState = currOp.apply(node.getState());
 			if(transitionState == null)
 				continue;
-			Node transitionNode = new Node(transitionState, node, currOp, node.getDepth() + 1, pathCost(this, node,transitionState.getTransitionCost()));
+			Node transitionNode = new Node(transitionState, node, currOp, node.getDepth() + 1);
 			children.add(transitionNode);
 		}
 		return children;
@@ -226,7 +224,7 @@ public class HelpR2_D2 extends SearchProblem{
 
 	@Override
 	public Node search(SearchProblem problem, SearchStrategy QingFunction, boolean visualize) {
-		Node root = new Node(initialState, null, null, 0, 0);
+		Node root = new Node(initialState, null, null, 0);
 		ArrayList<Node> visited = new ArrayList<Node>();
 		visited.add(root);
 		Queue<Node> queuedNodes = new LinkedList<Node>();
@@ -235,7 +233,7 @@ public class HelpR2_D2 extends SearchProblem{
 		while(!queuedNodes.isEmpty())
 		{
 			Node curr = queuedNodes.poll();
-			System.out.println(curr.getDepth());
+//			System.out.println(curr.getCost());
 //			if(((HelpR2_D2_State) curr.getState()).getCurrPosition().equals(new GridPosition(1, 3, Cell.ACTIVE_PORTAL)))
 //				System.out.println("Current state : " + curr.getState() + " " + grid[1][3].getCell());
 			
@@ -326,14 +324,17 @@ public class HelpR2_D2 extends SearchProblem{
 		HelpR2_D2.initialState = new HelpR2_D2_State(initial, rocks, 0, 0);
 //		test.printGrid();
 		
-		BFS bfs = new BFS(help, true);
+		BFS bfs = new BFS(help, false);
 		bfs.search();
 		
-		UniformCost ufc = new UniformCost(help, false);
-		ufc.search();
+//		UniformCost ufc = new UniformCost(help, false);
+//		ufc.search();
 		
 //		IterativeDeepening iterDeep = new IterativeDeepening(help, false);
 //		iterDeep.search();
+		
+//		DFS dfs = new DFS(help, true);
+//		dfs.search();
 		
 	}
 }
