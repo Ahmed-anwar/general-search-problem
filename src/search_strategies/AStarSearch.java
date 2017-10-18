@@ -29,7 +29,8 @@ public class AStarSearch extends SearchStrategy{
 	
 	@Override
 	public Queue<Node> enqueue(Queue<Node> nodesQueue, ArrayList<Node> children) {
-		PriorityQueue<Node> enqueuedNodes = new PriorityQueue<Node>(nodesQueue.size() + children.size(), new Comparator<Node>() {
+		int size = nodesQueue.size() + children.size() + 1;
+		PriorityQueue<Node> enqueuedNodes = new PriorityQueue<Node>(size, new Comparator<Node>() {
 
 			@Override
 			public int compare(Node node1, Node node2) {

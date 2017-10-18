@@ -109,7 +109,7 @@ public class HelpR2_D2_Operator extends Operator {
 		GridPosition[][] grid = new GridPosition[3][1];
 		GridPosition initial = new GridPosition(2, 0, Cell.EMPTY);
 		GridPosition.setNumCols(1);
-		GridPosition.setNumRows(3);
+		GridPosition.setNumRows(4);
 		help.setGrid(grid);
 		grid[0][0] = new GridPosition(0, 0, Cell.UNPRESSED_PAD);
 		grid[1][0] = new GridPosition(0, 1, Cell.ROCK);
