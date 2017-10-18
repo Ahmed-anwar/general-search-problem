@@ -7,11 +7,15 @@ import java.util.Stack;
 
 import grid.Cell;
 import grid.GridPosition;
+import heuristics.NearestFreeRock;
+import heuristics.RockToPadDistances;
 import search_problem.Node;
 import search_problem.Operator;
 import search_problem.SearchProblem;
 import search_problem.State;
+import search_strategies.AStarSearch;
 import search_strategies.BFS;
+import search_strategies.GreedySearch;
 import search_strategies.SearchStrategy;
 
 public class HelpR2_D2 extends SearchProblem{
@@ -31,10 +35,10 @@ public class HelpR2_D2 extends SearchProblem{
 		
 		ArrayList<Operator> ops = new ArrayList<Operator>();
 
-		ops.add(new HelpR2_D2_Operator(0,  -1, "Up"));
-		ops.add(new HelpR2_D2_Operator(0,  1, "Down"));
-		ops.add(new HelpR2_D2_Operator(-1,  0, "Left"));
-		ops.add(new HelpR2_D2_Operator(1,  0, "Right"));
+		ops.add(new HelpR2_D2_Operator(-1,  0, "Up"));
+		ops.add(new HelpR2_D2_Operator(1,  0, "Down"));
+		ops.add(new HelpR2_D2_Operator(0,  -1, "Left"));
+		ops.add(new HelpR2_D2_Operator(0,  1, "Right"));
 		setOperators(ops);		
 		
 //		initialState = genGrid();
@@ -86,7 +90,6 @@ public class HelpR2_D2 extends SearchProblem{
 		
 		ArrayList<GridPosition>	rockPositions = new ArrayList<GridPosition>();
 		
-		// TODO Save rock positions for initial state
 		for (int i = 0; i < numberOfRocks; i++) {
 			int row = (int) (Math.random() * rows);
 			int column = (int) (Math.random() * columns);
@@ -233,7 +236,9 @@ public class HelpR2_D2 extends SearchProblem{
 		while(!queuedNodes.isEmpty())
 		{
 			Node curr = queuedNodes.poll();
+
 //			System.out.println(curr.getCost());
+//			System.out.println(curr.getDepth());
 //			if(((HelpR2_D2_State) curr.getState()).getCurrPosition().equals(new GridPosition(1, 3, Cell.ACTIVE_PORTAL)))
 //				System.out.println("Current state : " + curr.getState() + " " + grid[1][3].getCell());
 			
@@ -241,7 +246,7 @@ public class HelpR2_D2 extends SearchProblem{
 			{
 				System.out.println("Solution found!");
 				System.out.println("Number of expanded nodes : " + numberOfExpandedNodes);
-
+				System.out.println("Cost of solution : " + curr.getCost());
 //				System.out.println(curr.getState());
 				// TODO trace operators until root
 				if(visualize)
@@ -289,6 +294,14 @@ public class HelpR2_D2 extends SearchProblem{
 			System.out.println(path.pop());
 	}
 	
+	public static ArrayList<GridPosition> getPadsPositions() {
+		return padsPositions;
+	}
+	
+	public static void setPadsPositions(ArrayList<GridPosition> padsPositions) {
+		HelpR2_D2.padsPositions = padsPositions;
+	}
+	
 	public static void main(String[] args) {
 	
 		HelpR2_D2 help = new HelpR2_D2();
@@ -322,10 +335,14 @@ public class HelpR2_D2 extends SearchProblem{
 		rocks.add(new GridPosition(0, 1, Cell.ROCK)); 
 		rocks.add(new GridPosition(2, 1, Cell.ROCK));
 		HelpR2_D2.initialState = new HelpR2_D2_State(initial, rocks, 0, 0);
-//		test.printGrid();
+		HelpR2_D2.padsPositions = new ArrayList<GridPosition>();
+		padsPositions.add(new GridPosition(0, 0, Cell.UNPRESSED_PAD));
+		padsPositions.add(new GridPosition(2, 2, Cell.UNPRESSED_PAD));
+//		help.printGrid();
+		System.out.println(help.initialState);
 		
-		BFS bfs = new BFS(help, false);
-		bfs.search();
+//		BFS bfs = new BFS(help, true);
+//		bfs.search();
 		
 //		UniformCost ufc = new UniformCost(help, false);
 //		ufc.search();
@@ -333,8 +350,17 @@ public class HelpR2_D2 extends SearchProblem{
 //		IterativeDeepening iterDeep = new IterativeDeepening(help, false);
 //		iterDeep.search();
 		
-//		DFS dfs = new DFS(help, true);
+//		DFS dfs = new DFS(help, false);
 //		dfs.search();
+		RockToPadDistances rpd = new RockToPadDistances();
+		NearestFreeRock nfr = new NearestFreeRock();
+		
+//		GreedySearch gs = new GreedySearch(help, false, nfr);
+//		gs.search();
+		
+		AStarSearch astar = new AStarSearch(help, false, nfr);
+		astar.search();
 		
 	}
+
 }

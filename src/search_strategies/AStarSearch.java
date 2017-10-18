@@ -1,21 +1,50 @@
 package search_strategies;
 import java.util.ArrayList;
+import java.util.Comparator;
+import java.util.LinkedList;
+import java.util.PriorityQueue;
 import java.util.Queue;
 
+import heuristics.HeuristicFunction;
 import search_problem.Node;
+import search_problem.SearchProblem;
 
 public class AStarSearch extends SearchStrategy{
 
-	@Override
-	public Queue<Node> enqueue(Queue<Node> nodes, ArrayList<Node> children) {
-		// TODO Auto-generated method stub
-		return null;
+	SearchProblem problem;
+	boolean visualize;
+	HeuristicFunction h;
+	
+	public AStarSearch(SearchProblem p, boolean v, HeuristicFunction hf)
+	{
+		problem = p;
+		visualize = v;
+		h = hf;
 	}
-
+	
 	@Override
 	public Node search() {
-		// TODO Auto-generated method stub
-		return null;
+		return problem.search(problem, this, visualize);
 	}
+	
+	@Override
+	public Queue<Node> enqueue(Queue<Node> nodesQueue, ArrayList<Node> children) {
+		PriorityQueue<Node> enqueuedNodes = new PriorityQueue<Node>(nodesQueue.size() + children.size(), new Comparator<Node>() {
+
+			@Override
+			public int compare(Node node1, Node node2) {
+				return (h.heuristicCost(node1) + node1.getCost()) - (h.heuristicCost(node2) + node2.getCost());
+			}
+			
+		});
+		enqueuedNodes.addAll(nodesQueue);
+		Queue<Node> returnQueue = new LinkedList<Node>();
+		for (int i = 0; i < children.size(); i++) 
+			enqueuedNodes.add(children.get(i));
+		returnQueue.addAll(enqueuedNodes);
+		return returnQueue;
+
+	}
+
 
 }

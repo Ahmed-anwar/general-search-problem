@@ -72,6 +72,11 @@ public  class GridPosition implements Comparable<GridPosition> , Cloneable{
 		return Cell.EMPTY;
 	}
 
+	public static int cityBlockDistance(GridPosition p1, GridPosition p2)
+	{
+		return Math.abs(p1.getRow() - p2.getRow()) + Math.abs(p1.getColumn() - p2.getColumn());
+	}
+	
 	public int getRow() {
 		return row;
 	}

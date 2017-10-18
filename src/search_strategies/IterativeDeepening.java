@@ -1,8 +1,8 @@
 package search_strategies;
 import java.util.ArrayList;
+import java.util.Deque;
 import java.util.LinkedList;
 import java.util.Queue;
-import java.util.Stack;
 
 import search_problem.Node;
 import search_problem.SearchProblem;
@@ -34,12 +34,12 @@ public class IterativeDeepening extends SearchStrategy{
 
 	@Override
 	public Queue<Node> enqueue(Queue<Node> nodesQueue, ArrayList<Node> children) {
-		Stack<Node> enqueuedNodes = new Stack<Node>();
+		Deque<Node> enqueuedNodes = new LinkedList<Node>();
 		enqueuedNodes.addAll(nodesQueue);
 		Queue<Node> returnQueue = new LinkedList<Node>();
 		for (int i = 0; i < children.size(); i++){
 			if(children.get(i).getDepth() <= itrDepth)
-				enqueuedNodes.push(children.get(i));
+				enqueuedNodes.addFirst(children.get(i));
 		} 
 
 		returnQueue.addAll(enqueuedNodes);

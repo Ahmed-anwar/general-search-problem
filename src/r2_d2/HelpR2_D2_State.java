@@ -86,44 +86,40 @@ public class HelpR2_D2_State  extends State{
 		return (transitionCost - pressedPads) - (o.transitionCost - pressedPads);
 	}
 
-	public int cityBlockDistance(GridPosition p1, GridPosition p2)
-	{
-		return Math.abs(p1.getRow() - p2.getRow()) + Math.abs(p1.getColumn() - p2.getColumn());
-	}
 	
-	public int h1()
-	{
-		int min = Integer.MAX_VALUE;
-		for (int i = 0; i < rocksPositions.size(); i++) {
-			if(rocksPositions.get(i).getCell() == Cell.ROCK)
-				min = Math.min(min, cityBlockDistance(currPosition, rocksPositions.get(i)));
-		}
-		if(min == Integer.MAX_VALUE)
-			return cityBlockDistance(currPosition, new GridPosition(HelpR2_D2.getRowPortal(), HelpR2_D2.getColPortal(), Cell.INACTIVE_PORTAL));
-		return min;
-	}
+//	public int h1()
+//	{
+//		int min = Integer.MAX_VALUE;
+//		for (int i = 0; i < rocksPositions.size(); i++) {
+//			if(rocksPositions.get(i).getCell() == Cell.ROCK)
+//				min = Math.min(min, cityBlockDistance(currPosition, rocksPositions.get(i)));
+//		}
+//		if(min == Integer.MAX_VALUE)
+//			return cityBlockDistance(currPosition, new GridPosition(HelpR2_D2.getRowPortal(), HelpR2_D2.getColPortal(), Cell.INACTIVE_PORTAL));
+//		return min;
+//	}
 
-	public int h2()
-	{
-		return cityBlockDistance(currPosition, new GridPosition(HelpR2_D2.getRowPortal(), HelpR2_D2.getColPortal(), Cell.INACTIVE_PORTAL));
-	}
+//	public int h2()
+//	{
+//		return cityBlockDistance(currPosition, new GridPosition(HelpR2_D2.getRowPortal(), HelpR2_D2.getColPortal(), Cell.INACTIVE_PORTAL));
+//	}
 	
-	public int h3()
-	{
-		int estimatedCost = 0;
-		for (int i = 0; i < rocksPositions.size(); i++) {
-			GridPosition currRock = rocksPositions.get(i);
-			int min = Integer.MAX_VALUE;
-			
-			for (int j = 0; j < HelpR2_D2.padsPositions.size(); j++) 
-				min = Math.min(min, cityBlockDistance(currRock, HelpR2_D2.padsPositions.get(j)));
-			
-			estimatedCost += min;
-		}
-		if(estimatedCost == 0)
-			return cityBlockDistance(currPosition, new GridPosition(HelpR2_D2.getRowPortal(), HelpR2_D2.getColPortal(), Cell.INACTIVE_PORTAL));
-		return estimatedCost;
-	}
+//	public int h3()
+//	{
+//		int estimatedCost = 0;
+//		for (int i = 0; i < rocksPositions.size(); i++) {
+//			GridPosition currRock = rocksPositions.get(i);
+//			int min = Integer.MAX_VALUE;
+//			
+//			for (int j = 0; j < HelpR2_D2.padsPositions.size(); j++) 
+//				min = Math.min(min, cityBlockDistance(currRock, HelpR2_D2.padsPositions.get(j)));
+//			
+//			estimatedCost += min;
+//		}
+//		if(estimatedCost == 0)
+//			return cityBlockDistance(currPosition, new GridPosition(HelpR2_D2.getRowPortal(), HelpR2_D2.getColPortal(), Cell.INACTIVE_PORTAL));
+//		return estimatedCost;
+//	}
 
 	public String toString()
 	{
@@ -150,7 +146,7 @@ public class HelpR2_D2_State  extends State{
 				case ROCK: c = 'x'; break;
 				case ACTIVE_PORTAL: 
 				case INACTIVE_PORTAL: c = (char)187 ; break;
-				case BLOCKED: c = (char)220; break;
+				case BLOCKED: c = (char)569; break;
 				case UNPRESSED_PAD: c = 'o'; break;
 				case PRESSED_PAD: c = (char)186 ; break;
 				}

@@ -7,7 +7,7 @@ public class Node implements Comparable<Node>{
 	Node parent;
 	Operator getAncestor;
 	int depth;
-	int cost = 1; // from the root node
+	int cost = 0; // from the root node
 	
 	public Node(State s, Node p, Operator op, int d){
 		state = s;
@@ -17,8 +17,8 @@ public class Node implements Comparable<Node>{
 		if(p != null)
 			cost = p.cost;
 		cost += ((HelpR2_D2_State) s).getTransitionCost();
-		System.out.println("Node Cost : " + cost);
-		System.out.println("Transition Cost : " + ((HelpR2_D2_State) s).getTransitionCost());
+//		System.out.println("Node Cost : " + cost);
+//		System.out.println("Transition Cost : " + ((HelpR2_D2_State) s).getTransitionCost());
 	}
 
 	public State getState() {
