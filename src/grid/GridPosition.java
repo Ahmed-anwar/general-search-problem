@@ -17,10 +17,24 @@ public  class GridPosition implements Comparable<GridPosition> , Cloneable{
 		this.row = row;
 		this.column = column;
 		this.cell = cell;
-		this.cellNum = row*numRows + column;
+		this.cellNum = row*numCols + column;
 	}
-	
-	
+
+	public static GridPosition getPosition(int cell)
+	{
+		int row = cell / numCols;
+		int col = cell % numCols;
+		return new GridPosition(row, col, Cell.EMPTY);
+	}
+
+	public static boolean isCorner(int row, int col)
+	{
+		if((row == 0 && col == 0) || (row == 0 && col == numCols - 1) ||
+				(col == 0 && row == numRows - 1) || (col == numCols - 1 && row == numRows - 1))
+			return true;
+		return false;
+	}
+
 	public int getCellNum() {
 		return cellNum;
 	}
@@ -53,7 +67,7 @@ public  class GridPosition implements Comparable<GridPosition> , Cloneable{
 		ret &= gCol >= 0 && gCol < numCols;
 		return ret; 
 	}
-	
+
 	public static Cell updateCell(int row, int column, ArrayList<GridPosition> rocks, int pp){
 		GridPosition[][] grid = HelpR2_D2.getGrid();
 		Cell initialCell = grid[row][column].getCell();
@@ -65,8 +79,7 @@ public  class GridPosition implements Comparable<GridPosition> , Cloneable{
 		case ROCK : return containsRock ? Cell.ROCK : Cell.EMPTY;
 		case UNPRESSED_PAD : 
 		case PRESSED_PAD : return containsRock ? Cell.PRESSED_PAD : Cell.UNPRESSED_PAD;
-		case ACTIVE_PORTAL : 
-		case INACTIVE_PORTAL : return pp == HelpR2_D2.getNumberOfPads() ? Cell.ACTIVE_PORTAL : Cell.INACTIVE_PORTAL;
+		case PORTAL : return containsRock? Cell.ROCK : Cell.PORTAL;
 		case BLOCKED : return Cell.BLOCKED;
 		}
 		return Cell.EMPTY;
@@ -76,7 +89,7 @@ public  class GridPosition implements Comparable<GridPosition> , Cloneable{
 	{
 		return Math.abs(p1.getRow() - p2.getRow()) + Math.abs(p1.getColumn() - p2.getColumn());
 	}
-	
+
 	public int getRow() {
 		return row;
 	}
@@ -116,4 +129,5 @@ public  class GridPosition implements Comparable<GridPosition> , Cloneable{
 	public void setCell(Cell cell) {
 		this.cell = cell;
 	}
+
 }

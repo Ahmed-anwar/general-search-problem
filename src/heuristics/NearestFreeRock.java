@@ -22,7 +22,7 @@ public class NearestFreeRock extends HeuristicFunction{
 				min = Math.min(min, GridPosition.cityBlockDistance(currPosition, rocksPositions.get(i)));
 		}
 		if(min == Integer.MAX_VALUE)
-			return GridPosition.cityBlockDistance(currPosition, new GridPosition(HelpR2_D2.getRowPortal(), HelpR2_D2.getColPortal(), Cell.INACTIVE_PORTAL));
+			return GridPosition.cityBlockDistance(currPosition, new GridPosition(HelpR2_D2.getRowPortal(), HelpR2_D2.getColPortal(), Cell.PORTAL));
 		return min;
 	}
 

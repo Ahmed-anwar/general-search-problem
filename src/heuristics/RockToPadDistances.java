@@ -25,7 +25,7 @@ public class RockToPadDistances extends HeuristicFunction{
 			estimatedCost += min;
 		}
 		if(estimatedCost == 0)
-			return GridPosition.cityBlockDistance(currPosition, new GridPosition(HelpR2_D2.getRowPortal(), HelpR2_D2.getColPortal(), Cell.INACTIVE_PORTAL));
+			return GridPosition.cityBlockDistance(currPosition, new GridPosition(HelpR2_D2.getRowPortal(), HelpR2_D2.getColPortal(), Cell.PORTAL));
 		return estimatedCost;
 	}
 
