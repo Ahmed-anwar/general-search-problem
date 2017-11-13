@@ -24,7 +24,7 @@ public class IterativeDeepening extends SearchStrategy{
 	public Node search() {
 		Node resultNode = null;
 		numberOfExpandedNodes = 0;
-		for(int i = 0 ; leafCheck ; i++){
+		for(int i = 0 ; i <= 7 ; i++){
 			leafCheck = false;
 			itrDepth = i + 1;
 			resultNode = problem.search(problem, this, visualize);

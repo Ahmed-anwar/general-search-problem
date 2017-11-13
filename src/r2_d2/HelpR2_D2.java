@@ -1,4 +1,6 @@
 package r2_d2;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -45,7 +47,12 @@ public class HelpR2_D2 extends SearchProblem{
 		ops.add(new HelpR2_D2_Operator(0,  1, "Right"));
 		setOperators(ops);		
 
-		initialState = genGrid();
+		try {
+			initialState = genGrid();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 
 	}
 
@@ -73,10 +80,12 @@ public class HelpR2_D2 extends SearchProblem{
 		HelpR2_D2.numberOfBlocks = numberOfBlocks;
 	}
 
-	public HelpR2_D2_State genGrid(){
+	public HelpR2_D2_State genGrid() throws IOException{
 
+		PrintWriter pw = new PrintWriter(new FileWriter("KB"));
+		
 		ArrayList<Integer> rowsAndColumns = new ArrayList<Integer>();
-		rowsAndColumns.add(2);	rowsAndColumns.add(3);	rowsAndColumns.add(4);	rowsAndColumns.add(5);	//rowsAndColumns.add(6);
+		rowsAndColumns.add(2);	rowsAndColumns.add(3);	rowsAndColumns.add(4);	rowsAndColumns.add(5);	rowsAndColumns.add(6);
 		Collections.shuffle(rowsAndColumns);
 		int rows = rowsAndColumns.get(0);
 		Collections.shuffle(rowsAndColumns);
@@ -135,11 +144,16 @@ public class HelpR2_D2 extends SearchProblem{
 			padsPositions.add(new GridPosition(pos.getRow(), pos.getColumn(), Cell.UNPRESSED_PAD));
 			grid[pos.getRow()][pos.getColumn()].setCell(Cell.UNPRESSED_PAD);
 		}
+		
+		
+		StringBuilder sb = new StringBuilder();
 
 		for (int i = 0; i < numberOfBlocks; i++) {
 			GridPosition pos = GridPosition.getPosition(possibleCell.remove(0));
 			padsPositions.add(new GridPosition(pos.getRow(), pos.getColumn(), Cell.BLOCKED));
 			grid[pos.getRow()][pos.getColumn()].setCell(Cell.BLOCKED);
+			sb.append("Obstacle(" + pos.getRow() + "," + pos.getColumn() + ")" + '\n');
+			
 		}
 
 		GridPosition initialPos = GridPosition.getPosition(possibleCell.remove(0));
@@ -149,15 +163,27 @@ public class HelpR2_D2 extends SearchProblem{
 		rowPortal = portalPos.getRow();
 		colPortal = portalPos.getColumn();
 
-		//		System.out.println("position: " + portalCell);
-		//		System.out.println("row portal: " + rowPortal);
-		//		System.out.println("col portal: " + colPortal);
 		grid[portalPos.getRow()][portalPos.getColumn()].setCell(Cell.PORTAL);
+		
+		pw.println("R2D2(" + initialPos.getRow() + ", " + initialPos.getColumn() + ", S0" + ")");
+		pw.println("Portal(" + portalPos.getRow() + ", " + portalPos.getColumn() + ")");
+		
+		for(int i = 0; i < numberOfRocks; i++){
+			pw.println("Rock(" + rockPositions.get(i).getRow() + "," + rockPositions.get(i).getColumn() + ", S0" + ")");
+		}
 
+		for(int i = 0; i < numberOfPads; i++){
+			pw.println("Pad(" + padsPositions.get(i).getRow() + "," + padsPositions.get(i).getColumn() + ")");
+		}
+		
+		pw.println(sb);
+		pw.flush();
+		pw.close();
+		
 		return new HelpR2_D2_State(initialPos, rockPositions, 0, 0);
 	}
 
-	public HelpR2_D2_State genGrid2(){
+	public HelpR2_D2_State genGrid2() throws IOException{
 		ArrayList<Integer> rowsAndColumns = new ArrayList<Integer>();
 		rowsAndColumns.add(2);	rowsAndColumns.add(3);	rowsAndColumns.add(4);	rowsAndColumns.add(5);	rowsAndColumns.add(6);
 		Collections.shuffle(rowsAndColumns);
@@ -387,7 +413,13 @@ public class HelpR2_D2 extends SearchProblem{
 		HelpR2_D2.padsPositions = padsPositions;
 	}
 
-	public static void main(String[] args) {
+	public static void main(String[] args) throws IOException {
+		
+		HelpR2_D2 help = new HelpR2_D2();
+		
+		//help.genGrid();
+		System.out.println(help.initialState);
+		
 
 		//		HelpR2_D2 help = new HelpR2_D2();
 		//		GridPosition[][] grid = new GridPosition[4][4];
@@ -429,7 +461,7 @@ public class HelpR2_D2 extends SearchProblem{
 		//		for(int i = 0; i < 50 ; i++)
 		//		{
 
-		HelpR2_D2 help = new HelpR2_D2();
+//		HelpR2_D2 help = new HelpR2_D2();
 
 		//		GridPosition[][] grid = new GridPosition[4][2];
 		//		GridPosition initial = new GridPosition(2, 0, Cell.EMPTY);
@@ -496,50 +528,96 @@ public class HelpR2_D2 extends SearchProblem{
 		//		HelpR2_D2.setRowPortal(1);
 		//		HelpR2_D2.setColPortal(1);
 
-
-		System.out.println(HelpR2_D2.initialState);
-
-		System.out.println("\nBreadth-First Search : ");
-		BFS bfs = new BFS(help, false);
-		bfs.search();
-
-
-		System.out.println("\nUniform-Cost Search : ");
-		UniformCost ufc = new UniformCost(help, false);
-		ufc.search();
-
-
-		System.out.println("\nIterative Deepening Search : ");
-		IterativeDeepening iterDeep = new IterativeDeepening(help, false);
-		iterDeep.search();
-
-
-		System.out.println("\nDepth-First Search : ");
-		DFS dfs = new DFS(help, false);
-		dfs.search();
-
-		RockToPadDistances rpd = new RockToPadDistances();
-		NearestFreeRock nfr = new NearestFreeRock();
-
-
-		System.out.println("\nGreedy Search 1: ");
-		GreedySearch gs1 = new GreedySearch(help, false, rpd);
-		gs1.search();
-
-
-		System.out.println("\nGreedy Search 2: ");
-		GreedySearch gs2 = new GreedySearch(help, false, nfr);
-		gs2.search();
-
-
-		System.out.println("\nA* Search 1: ");
-		AStarSearch astar1 = new AStarSearch(help, false, rpd);
-		astar1.search();
-
-
-		System.out.println("\nA* Search 2: ");
-		AStarSearch astar2 = new AStarSearch(help, false, nfr);
-		astar2.search();
+//		
+//				GridPosition[][] grid = new GridPosition[5][5];
+//				GridPosition initial = new GridPosition(4, 2, Cell.EMPTY);
+//				GridPosition.setNumRows(5);
+//				GridPosition.setNumCols(5);
+//				help.numPressedPads = 0;
+//				help.numberOfPads = 1;
+//				grid[0][0] = new GridPosition(0, 0, Cell.EMPTY);
+//				grid[0][1] = new GridPosition(0, 1, Cell.EMPTY);
+//				grid[0][2] = new GridPosition(0, 2, Cell.EMPTY);
+//				grid[0][3] = new GridPosition(0, 3, Cell.EMPTY);
+//				grid[0][4] = new GridPosition(0, 4, Cell.EMPTY);
+//
+//				grid[1][0] = new GridPosition(1, 0, Cell.EMPTY);
+//				grid[1][1] = new GridPosition(1, 1, Cell.EMPTY);
+//				grid[1][2] = new GridPosition(1, 2, Cell.PORTAL);
+//				grid[1][3] = new GridPosition(1, 3, Cell.EMPTY);
+//				grid[1][4] = new GridPosition(1, 4, Cell.EMPTY);
+//				
+//				grid[2][0] = new GridPosition(2, 0, Cell.EMPTY);
+//				grid[2][1] = new GridPosition(2, 1, Cell.EMPTY);
+//				grid[2][2] = new GridPosition(2, 2, Cell.UNPRESSED_PAD);
+//				grid[2][3] = new GridPosition(2, 3, Cell.EMPTY);
+//				grid[2][4] = new GridPosition(2, 4, Cell.EMPTY);
+//
+//				grid[3][0] = new GridPosition(3, 0, Cell.BLOCKED);
+//				grid[3][1] = new GridPosition(3, 1, Cell.BLOCKED);
+//				grid[3][2] = new GridPosition(3, 2, Cell.ROCK);
+//				grid[3][3] = new GridPosition(3, 3, Cell.BLOCKED);
+//				grid[3][4] = new GridPosition(3, 4, Cell.EMPTY);
+//				
+//				grid[4][0] = new GridPosition(4, 0, Cell.EMPTY);
+//				grid[4][1] = new GridPosition(4, 1, Cell.EMPTY);
+//				grid[4][2] = new GridPosition(4, 2, Cell.EMPTY);
+//				grid[4][3] = new GridPosition(4, 3, Cell.EMPTY);
+//				grid[4][4] = new GridPosition(4, 4, Cell.EMPTY);
+//				
+//				help.setGrid(grid);
+//		
+//				ArrayList<GridPosition> rocks = new ArrayList<GridPosition>();
+//				rocks.add(new GridPosition(3, 2, Cell.ROCK)); 
+//				HelpR2_D2.padsPositions = new ArrayList<GridPosition>();
+//				padsPositions.add(new GridPosition(2, 2, Cell.UNPRESSED_PAD));
+//				HelpR2_D2.initialState = new HelpR2_D2_State(initial, rocks, 0, 0);
+//				HelpR2_D2.setRowPortal(1);
+//				HelpR2_D2.setColPortal(2);
+//		
+//		
+//		
+//
+//		System.out.println(HelpR2_D2.initialState);
+//
+//		System.out.println("\nBreadth-First Search : ");
+//		BFS bfs = new BFS(help, false);
+//		bfs.search();
+//
+//		System.out.println("\nUniform-Cost Search : ");
+//		UniformCost ufc = new UniformCost(help, false);
+//		ufc.search();
+//
+//		System.out.println("\nDepth-First Search : ");
+//		DFS dfs = new DFS(help, false);
+//		dfs.search();
+//
+//		RockToPadDistances rpd = new RockToPadDistances();
+//		NearestFreeRock nfr = new NearestFreeRock();
+//
+//
+//		System.out.println("\nGreedy Search 1: ");
+//		GreedySearch gs1 = new GreedySearch(help, false, rpd);
+//		gs1.search();
+//
+//
+//		System.out.println("\nGreedy Search 2: ");
+//		GreedySearch gs2 = new GreedySearch(help, false, nfr);
+//		gs2.search();
+//
+//
+//		System.out.println("\nA* Search 1: ");
+//		AStarSearch astar1 = new AStarSearch(help, false, rpd);
+//		astar1.search();
+//
+//
+//		System.out.println("\nA* Search 2: ");
+//		AStarSearch astar2 = new AStarSearch(help, false, nfr);
+//		astar2.search();
+//
+//		System.out.println("\nIterative Deepening Search : ");
+//		IterativeDeepening iterDeep = new IterativeDeepening(help, true);
+//		iterDeep.search();
 	}
 
 	//	}

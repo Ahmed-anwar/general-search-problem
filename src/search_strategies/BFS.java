@@ -28,6 +28,7 @@ public class BFS extends SearchStrategy{
 		}
 		else
 		{
+			System.out.println(end.getDepth());
 			System.out.println("Solution found!");
 			System.out.println("Number of expanded nodes : " + numberOfExpandedNodes);
 			System.out.println("Cost of solution : " + end.getCost());

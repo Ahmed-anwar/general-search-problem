@@ -74,7 +74,7 @@ public class HelpR2_D2_Operator extends Operator {
 			if(newCell == Cell.PRESSED_PAD){
 				newPressPads--;
 				newCell = Cell.UNPRESSED_PAD;
-				tcost = 7;
+				tcost = 100;
 			}
 			else if(newCell == Cell.ROCK && newRow == HelpR2_D2.rowPortal && newCol == HelpR2_D2.colPortal)
 				newCell = Cell.PORTAL;
